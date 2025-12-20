@@ -7,44 +7,60 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Rotas mockadas para deploy
+// Rota raiz
 app.get('/', (req, res) => {
   res.json({
     message: 'Todo API - Gerenciamento de Tarefas',
     status: 'online',
     version: '1.0.0',
-    endpoints: ['/health', '/tasks'],
-    repository: 'https://github.com/willsmolarek/todo-api-junior'
+    endpoints: {
+      root: 'GET /',
+      health: 'GET /health',
+      tasks: 'GET /tasks',
+      createTask: 'POST /tasks',
+      getTask: 'GET /tasks/:id',
+      updateTask: 'PUT /tasks/:id',
+      deleteTask: 'DELETE /tasks/:id'
+    },
+    repository: 'https://github.com/willsmolarek/todo-api-junior',
+    note: 'Full TypeScript implementation available in repository'
   });
 });
 
+// Health check
 app.get('/health', (req, res) => {
   res.json({
     status: 'OK',
-    message: 'API is running',
-    timestamp: new Date().toISOString()
+    message: 'Todo API is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'production'
   });
 });
 
+// Mock tasks endpoint
 app.get('/tasks', (req, res) => {
   res.json({
     success: true,
     data: [
       {
-        id: 'example-1',
-        title: 'Example Task 1',
+        id: 'sample-1',
+        title: 'Deploy API to production',
+        description: 'Successfully deployed to Render',
         status: 'COMPLETED',
-        priority: 'HIGH'
+        priority: 'HIGH',
+        createdAt: new Date().toISOString()
       },
       {
-        id: 'example-2',
-        title: 'Example Task 2',
+        id: 'sample-2',
+        title: 'Add to portfolio',
+        description: 'Showcase this project to recruiters',
         status: 'PENDING',
-        priority: 'MEDIUM'
+        priority: 'MEDIUM',
+        createdAt: new Date().toISOString()
       }
     ],
     count: 2,
-    note: 'Full CRUD implementation available in repository'
+    message: 'Mock data - full CRUD implementation in GitHub repository'
   });
 });
 
@@ -53,7 +69,8 @@ app.use('*', (req, res) => {
   res.status(404).json({
     success: false,
     message: `Route ${req.originalUrl} not found`,
-    availableRoutes: ['/', '/health', '/tasks']
+    availableRoutes: ['/', '/health', '/tasks'],
+    repository: 'https://github.com/willsmolarek/todo-api-junior'
   });
 });
 
