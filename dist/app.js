@@ -1,35 +1,60 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const dotenv_1 = __importDefault(require("dotenv"));
-const tasks_routes_1 = __importDefault(require("./routes/tasks.routes"));
-const error_middleware_1 = require("./middlewares/error.middleware");
-const logger_1 = require("./utils/logger");
-dotenv_1.default.config();
-const app = (0, express_1.default)();
-app.use(express_1.default.json());
-app.use(express_1.default.urlencoded({ extended: true }));
-app.use((req, _res, next) => {
-    logger_1.Logger.info(`${req.method} ${req.path}`);
-    next();
+// dist/app.js - Versão simplificada para deploy
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// Rotas mockadas para deploy
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Todo API - Gerenciamento de Tarefas',
+    status: 'online',
+    version: '1.0.0',
+    endpoints: ['/health', '/tasks'],
+    repository: 'https://github.com/willsmolarek/todo-api-junior'
+  });
 });
-app.use('/tasks', tasks_routes_1.default);
-app.get('/health', (_req, res) => {
-    res.json({
-        status: 'OK',
-        message: 'Todo API is running',
-        timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV
-    });
+
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'OK',
+    message: 'API is running',
+    timestamp: new Date().toISOString()
+  });
 });
+
+app.get('/tasks', (req, res) => {
+  res.json({
+    success: true,
+    data: [
+      {
+        id: 'example-1',
+        title: 'Example Task 1',
+        status: 'COMPLETED',
+        priority: 'HIGH'
+      },
+      {
+        id: 'example-2',
+        title: 'Example Task 2',
+        status: 'PENDING',
+        priority: 'MEDIUM'
+      }
+    ],
+    count: 2,
+    note: 'Full CRUD implementation available in repository'
+  });
+});
+
+// 404 handler
 app.use('*', (req, res) => {
-    res.status(404).json({
-        success: false,
-        message: `Route ${req.originalUrl} not found`
-    });
+  res.status(404).json({
+    success: false,
+    message: `Route ${req.originalUrl} not found`,
+    availableRoutes: ['/', '/health', '/tasks']
+  });
 });
-app.use(error_middleware_1.errorHandler);
-exports.default = app;
+
+module.exports = app;

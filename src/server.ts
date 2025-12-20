@@ -1,9 +1,10 @@
-import app from './app';
+const app = require('./app').default || require('./app');
 
-const PORT = parseInt(process.env.PORT || '3000', 10);
+// Render usa process.env.PORT, se não tiver, usa 3000
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 // Adicione uma rota raiz para evitar 404
-app.get('/', (_req, res) => {
+app.get('/', (_req: any, res: any) => {
   res.json({
     message: 'Todo API - Gerenciamento de Tarefas',
     version: '1.0.0',
@@ -18,7 +19,7 @@ app.get('/', (_req, res) => {
       }
     },
     documentation: 'Veja README.md no GitHub para detalhes',
-    repository: 'https://github.com/seu-usuario/todo-api-junior',
+    repository: 'https://github.com/willsmolarek/todo-api-junior',
     status: 'online'
   });
 });
@@ -39,4 +40,4 @@ process.on('SIGINT', () => {
   });
 });
 
-export default server;
+module.exports = server;

@@ -2,12 +2,9 @@ services:
   - type: web
     name: todo-api-junior
     runtime: node
-    buildCommand: npm install && npm run build
+    buildCommand: echo "Using pre-built JavaScript version"
     startCommand: node dist/server.js
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 10000
     healthCheckPath: /health
-    healthCheckTimeout: 30

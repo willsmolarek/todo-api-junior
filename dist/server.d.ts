@@ -1,2 +1,3 @@
-declare const server: import("http").Server<typeof import("http").IncomingMessage, typeof import("http").ServerResponse>;
-export default server;
+declare const app: any;
+declare const PORT: number;
+declare const server: any;
