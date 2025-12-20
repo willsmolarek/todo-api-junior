@@ -31,13 +31,13 @@ export const UpdateTaskSchema = z.object({
       .optional()
   }),
   params: z.object({
-    id: z.string().uuid('Invalid task ID')
+    id: z.string().min(1, 'ID is required')  // Apenas valida que não está vazio
   })
 });
 
 export const TaskIdSchema = z.object({
   params: z.object({
-    id: z.string().uuid('Invalid task ID')
+    id: z.string().min(1, 'ID is required')  // Apenas valida que não está vazio
   })
 });
 
