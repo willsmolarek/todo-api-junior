@@ -32,11 +32,11 @@ exports.UpdateTaskSchema = zod_1.z.object({
             .optional()
     }),
     params: zod_1.z.object({
-        id: zod_1.z.string().uuid('Invalid task ID')
+        id: zod_1.z.string().min(1, 'ID is required')
     })
 });
 exports.TaskIdSchema = zod_1.z.object({
     params: zod_1.z.object({
-        id: zod_1.z.string().uuid('Invalid task ID')
+        id: zod_1.z.string().min(1, 'ID is required')
     })
 });

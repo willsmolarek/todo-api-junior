@@ -3,8 +3,19 @@ import dotenv from 'dotenv';
 import taskRoutes from './routes/tasks.routes';
 import { errorHandler } from './middlewares/error.middleware';
 import { Logger } from './utils/logger';
+import cors from 'cors';
 
 dotenv.config();
+
+const app = express();
+
+// CORS para produção
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://todo-api-junior.onrender.com', 'https://seu-usuario.github.io']
+    : 'http://localhost:3000',
+  credentials: true
+}));
 
 const app = express();
 

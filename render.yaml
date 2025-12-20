@@ -9,9 +9,5 @@ services:
         value: production
       - key: PORT
         value: 10000
-      - key: DATABASE_URL
-        value: "file:./production.db"
-    disk:
-      name: data
-      mountPath: /data
-      sizeGB: 1
+    healthCheckPath: /health
+    healthCheckTimeout: 30
