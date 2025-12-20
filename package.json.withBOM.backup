@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "todo-api-junior",
   "version": "1.0.0",
   "description": "API REST de Tarefas para demonstrar habilidades",
@@ -18,7 +18,13 @@
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write \"src/**/*.ts\""
   },
-  "keywords": ["typescript", "express", "prisma", "api", "todo"],
+  "keywords": [
+    "typescript",
+    "express",
+    "prisma",
+    "api",
+    "todo"
+  ],
   "author": "Seu Nome",
   "license": "MIT",
   "dependencies": {

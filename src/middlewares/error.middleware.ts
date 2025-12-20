@@ -13,7 +13,7 @@ export const errorHandler = (
   error: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   console.error('Error:', {
     message: error.message,
@@ -37,7 +37,7 @@ export const errorHandler = (
     });
   }
 
-  // Erro de validaÃ§Ã£o do Zod
+  // Erro de validação do Zod
   if (error.name === 'ZodError') {
     return res.status(400).json({
       success: false,
@@ -46,7 +46,7 @@ export const errorHandler = (
     });
   }
 
-  // Erro genÃ©rico
+  // Erro genérico
   return res.status(500).json({
     success: false,
     error: 'Internal server error'
