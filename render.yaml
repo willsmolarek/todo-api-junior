@@ -2,8 +2,8 @@ services:
   - type: web
     name: todo-api-junior
     runtime: node
-    buildCommand: echo "Using pre-built JavaScript version"
-    startCommand: node dist/server.js
+    buildCommand: echo "Using simple JavaScript server"
+    startCommand: node server.js
     envVars:
       - key: NODE_ENV
         value: production
