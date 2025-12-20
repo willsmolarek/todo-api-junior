@@ -57,6 +57,7 @@ class TaskService {
     }
     async updateTask(id, data) {
         try {
+            // Verifica se a tarefa existe
             await this.getTaskById(id);
             const task = await database_1.default.task.update({
                 where: { id },
@@ -78,6 +79,7 @@ class TaskService {
     }
     async deleteTask(id) {
         try {
+            // Verifica se a tarefa existe
             await this.getTaskById(id);
             await database_1.default.task.delete({
                 where: { id },
