@@ -8,29 +8,3 @@ npm-debug.log*
 .env.development.local
 .env.test.local
 .env.production.local
-
-# Build
-dist/
-build/
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
-# Prisma
-.prisma/
-
-# Testes
-coverage/
-.nyc_output/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Sistema
-.DS_Store
-Thumbs.db
