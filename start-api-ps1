@@ -1,0 +1,199 @@
+# start-api.ps1 - Script para iniciar API Todo
+Write-Host "=== INICIANDO API TODO ===" -ForegroundColor Cyan
+
+# 1. Verificar se temos arquivo principal
+Write-Host "`n1. Procurando arquivo principal..." -ForegroundColor Yellow
+
+$mainFile = $null
+$possibleFiles = @("server.js", "app.js", "dist/server.js", "dist/app.js", "src/server.ts", "src/app.ts")
+
+foreach ($file in $possibleFiles) {
+    if (Test-Path $file) {
+        Write-Host "   ✅ Encontrado: $file" -ForegroundColor Green
+        $mainFile = $file
+        break
+    }
+}
+
+# Se não encontrou, criar server.js básico
+if (-not $mainFile) {
+    Write-Host "   ⚠️  Nenhum arquivo encontrado. Criando server.js básico..." -ForegroundColor Yellow
+    
+    @'
+// server.js - API Todo básica para testes
+const express = require("express");
+const app = express();
+
+// Middlewares básicos
+app.use(require("cors")());
+app.use(express.json());
+
+// Rota raiz (ESSENCIAL)
+app.get("/", (req, res) => {
+    res.json({
+        message: "🚀 Todo API - Online!",
+        status: "online",
+        version: "1.0.0",
+        author: "Willian Smolarek",
+        endpoints: [
+            "GET  /          → Esta mensagem",
+            "GET  /health    → Status da API",
+            "GET  /tasks     → Lista de tarefas",
+            "POST /tasks     → Criar tarefa",
+            "GET  /tasks/:id → Buscar tarefa",
+            "PUT  /tasks/:id → Atualizar tarefa",
+            "DELETE /tasks/:id → Remover tarefa"
+        ]
+    });
+});
+
+// Health check (ESSENCIAL para Render/testes)
+app.get("/health", (req, res) => {
+    res.json({
+        status: "OK",
+        message: "API is running",
+        timestamp: new Date().toISOString()
+    });
+});
+
+// Mock de tasks para demonstração
+const tasks = [
+    {
+        id: "1",
+        title: "Configurar servidor API",
+        description: "Configurar Express e rotas básicas",
+        status: "COMPLETED",
+        priority: "HIGH"
+    },
+    {
+        id: "2",
+        title: "Testar endpoints REST",
+        description: "Testar GET, POST, PUT, DELETE",
+        status: "IN_PROGRESS",
+        priority: "MEDIUM"
+    }
+];
+
+// GET /tasks
+app.get("/tasks", (req, res) => {
+    res.json({
+        success: true,
+        data: tasks,
+        count: tasks.length,
+        message: "Tasks retrieved successfully"
+    });
+});
+
+// POST /tasks
+app.post("/tasks", (req, res) => {
+    const newTask = {
+        id: (tasks.length + 1).toString(),
+        title: req.body.title || "Nova tarefa",
+        description: req.body.description || "",
+        status: "PENDING",
+        priority: req.body.priority || "MEDIUM",
+        createdAt: new Date().toISOString()
+    };
+    
+    tasks.push(newTask);
+    
+    res.status(201).json({
+        success: true,
+        data: newTask,
+        message: "Task created successfully"
+    });
+});
+
+// Porta
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, "0.0.0.0", () => {
+    console.log("=" . 50);
+    console.log("🚀 SERVIDOR INICIADO COM SUCESSO!");
+    console.log("=" . 50);
+    console.log(`📡 Porta: ${PORT}`);
+    console.log(`🌐 Ambiente: ${process.env.NODE_ENV || "development"}`);
+    console.log(`🔗 URL local: http://localhost:${PORT}`);
+    console.log(`🏥 Health check: http://localhost:${PORT}/health`);
+    console.log("=" . 50);
+    console.log("Pressione Ctrl+C para parar");
+    console.log("=" . 50);
+});
+
+module.exports = app;
+'@ | Set-Content -Path server.js -Encoding UTF8
+    
+    $mainFile = "server.js"
+    Write-Host "   ✅ server.js criado!" -ForegroundColor Green
+}
+
+# 2. Verificar dependências
+Write-Host "`n2. Verificando dependências..." -ForegroundColor Yellow
+
+# Verificar package.json
+if (Test-Path package.json) {
+    try {
+        $pkg = Get-Content package.json -Raw | ConvertFrom-Json
+        $hasExpress = $pkg.dependencies.PSObject.Properties.Name -contains "express"
+        
+        if ($hasExpress) {
+            Write-Host "   ✅ Express encontrado no package.json" -ForegroundColor Green
+        } else {
+            Write-Host "   ⚠️  Express não listado, adicionando..." -ForegroundColor Yellow
+            
+            # Adicionar ao package.json
+            if (-not $pkg.dependencies) { $pkg.dependencies = @{} }
+            $pkg.dependencies.express = "^4.18.0"
+            $pkg.dependencies.cors = "^2.8.5"
+            
+            $pkg | ConvertTo-Json -Depth 10 | Out-File package.json -Encoding UTF8
+            Write-Host "   ✅ Dependências adicionadas" -ForegroundColor Green
+        }
+    } catch {
+        Write-Host "   ⚠️  Erro ao ler package.json" -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "   ⚠️  package.json não encontrado. Criando..." -ForegroundColor Yellow
+    
+    @'
+{
+  "name": "todo-api-junior",
+  "version": "1.0.0",
+  "description": "API de Tarefas",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "cors": "^2.8.5"
+  }
+}
+'@ | Set-Content -Path package.json -Encoding UTF8
+    
+    Write-Host "   ✅ package.json criado!" -ForegroundColor Green
+}
+
+# 3. Instalar/verificar node_modules
+Write-Host "`n3. Verificando node_modules..." -ForegroundColor Yellow
+
+if (-not (Test-Path node_modules)) {
+    Write-Host "   ⚠️  node_modules não encontrado. Instalando..." -ForegroundColor Yellow
+    npm install
+} else {
+    Write-Host "   ✅ node_modules encontrado" -ForegroundColor Green
+}
+
+# 4. Iniciar servidor
+Write-Host "`n4. 🚀 INICIANDO SERVIDOR..." -ForegroundColor Green -BackgroundColor DarkBlue
+Write-Host "   Arquivo: $mainFile" -ForegroundColor Cyan
+Write-Host "   Porta: 3000" -ForegroundColor Cyan
+Write-Host "   URL: http://localhost:3000" -ForegroundColor Cyan
+Write-Host "`n" + "="*50 -ForegroundColor Cyan
+Write-Host "Pressione Ctrl+C para parar o servidor" -ForegroundColor Yellow
+Write-Host "="*50 -ForegroundColor Cyan
+Write-Host "`n"
+
+# Iniciar
+node $mainFile
