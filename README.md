@@ -12,3 +12,6 @@ API RESTful completa para gerenciamento de tarefas, construída com **TypeScript
 - ✅ **Documentação completa** e exemplos de uso
 
 **🎯 Objetivo:** Demonstrar habilidades em desenvolvimento backend com foco em boas práticas, código limpo e tecnologias modernas do ecossistema TypeScript.
+
+<img width="390" height="198" alt="image" src="https://github.com/user-attachments/assets/2a07f0ed-3f70-442d-a655-bcd0aa5e0e87" />
+
